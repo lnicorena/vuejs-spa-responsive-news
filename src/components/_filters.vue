@@ -20,10 +20,13 @@ export default {
     truncate: function(value, limit) {
       if (value.length > limit) {
         let index = value.lastIndexOf(" ", limit - 5);
-        value = value.substring(0, index) + ' [...]';
+        value = value.substring(0, index) + " [...]";
       }
 
       return value;
+    },
+    upper: function(value) {
+      return !value ? "" : value.toUpperCase();
     }
   }
 };

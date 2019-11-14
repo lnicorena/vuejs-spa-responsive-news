@@ -1,13 +1,13 @@
 <template>
   <div :class="`article-content-${mode}`">
     <News :mode="mode" :url="article.url" :image="article.image">
-      {{ article.title | escape}}
+      {{ article.title | escape }}
     </News>
     <Author :mode="mode" :image="article.avatar">
       {{ article.author }}
     </Author>
     <TextInfo :mode="mode">
-      {{ article.text |  escape | truncate(230) }}
+      {{ article.text | escape | truncate(230) }}
     </TextInfo>
   </div>
 </template>
@@ -28,9 +28,7 @@ export default {
     article: Object,
     mode: String
   },
-  mixins: [
-    TextFilters
-  ],
+  mixins: [TextFilters]
 };
 </script>
 

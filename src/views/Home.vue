@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navbar />
+    <Navbar :categories="categories" @categorySelected="filterArticles" />
     <div id="main-container" v-if="loaded">
       <div class="primary">
         <section>
@@ -47,8 +47,14 @@ export default {
     return {
       articlesList: null,
       loaded: false,
-      articles: []
+      articles: [],
+      page: 1,
+      categories: [],
+      categoryFilter: 0,
     };
+  },
+  created() {
+    this.loadCategories();
   },
   mounted() {
     this.loadArticles();
@@ -70,9 +76,22 @@ export default {
     }
   },
   methods: {
+    loadCategories() {
+      this.$api.get("/categories").then(res => {
+        if (res.statusText == "OK" && res.data.length) {
+          this.categories = res.data;
+          console.log(this.categories);
+        }
+      });
+    },
+    filterArticles(id) {
+      this.categoryFilter = id;
+      this.loadArticles();
+    },
     loadArticles() {
       this.loaded = false;
-      this.$api.get("/articles").then(res => {
+      let url = `/articles?page=${this.page}&category=${this.categoryFilter}`;
+      this.$api.get(url).then(res => {
         if (res.statusText == "OK" && res.data.data.length) {
           this.articlesList = res.data;
 
@@ -82,9 +101,7 @@ export default {
             article.author = data.authors.length
               ? data.authors[0].name
               : "Unknown";
-            article.category = data.categories.length
-              ? data.categories[0].name
-              : "Others";
+            article.categories = data.categories;
             article.content = data.content;
             article.text = data.excerpt;
             article.avatar = data.authors.length ? data.authors[0].avatar : "";

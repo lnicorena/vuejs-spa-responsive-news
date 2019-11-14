@@ -1,11 +1,19 @@
 <template>
   <div id="header">
-    <a href="#">
+    <a href="#" @click="logoClicked">
       <img id="logo" src="../assets/logo.png" />
     </a>
   </div>
 </template>
-
+<script>
+export default {
+  methods: {
+    logoClicked() {
+      this.$emit("logoClicked");
+    }
+  }
+};
+</script>
 <style scoped>
 #header {
   height: 53px;

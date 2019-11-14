@@ -1,6 +1,6 @@
 <template>
   <div :class="`article-${mode}`">
-    <ArticleHeader :text="article.category"></ArticleHeader>
+    <ArticleHeader :categories="article.categories"></ArticleHeader>
     <ArticleContent :article="article" :mode="mode" />
   </div>
 </template>

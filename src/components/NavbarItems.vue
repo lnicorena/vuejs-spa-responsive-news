@@ -1,7 +1,7 @@
 <template>
   <div class="nav-menu">
-    <span v-for="c in categories" v-bind:key="c">
-      <a>{{ c }}</a>
+    <span v-for="c in filteredCategories" v-bind:key="c.id">
+      <a @click="categoryClicked(c.id)">{{ c.name | escape | upper }}</a>
     </span>
     <span class="login">
       <a>LOGIN</a>
@@ -10,8 +10,24 @@
 </template>
 
 <script>
+import TextFilters from "@/components/_filters.vue";
 export default {
-  props: ["categories"]
+  props: ["categories"],
+  mixins: [TextFilters],
+  computed: {
+    filteredCategories() {
+      if (this.categories.length > 7) {
+        return this.categories.slice(0, 7)
+      } else {
+        return this.categories;
+      }
+    }
+  },
+  methods: {
+    categoryClicked(id){
+      this.$emit('categoryClicked', id)
+    }
+  },
 };
 </script>
 

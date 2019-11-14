@@ -6,10 +6,10 @@
         <li
           style="color: 'black'; hyphens: 'auto'"
           v-for="c in categories"
-          v-bind:key="c"
+          v-bind:key="c.id"
         >
-          <a>
-            {{ c }}
+          <a @click="categoryClicked(c.id)">
+            {{ c.name | escape | upper}}
           </a>
         </li>
       </ul>
@@ -18,8 +18,15 @@
 </template>
 
 <script>
+import TextFilters from "@/components/_filters.vue";
 export default {
-  props: ["categories"]
+  props: ["categories"],
+  mixins: [TextFilters],
+  methods: {
+    categoryClicked(id) {
+      this.$emit("categoryClicked", id);
+    }
+  }
 };
 </script>
 

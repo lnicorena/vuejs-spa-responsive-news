@@ -1,9 +1,18 @@
 <template>
   <div>
     <section id="navbar">
-      <NavbarSidemenu :categories="categories" />
-      <NavbarLogo :categories="categories" />
-      <NavbarItems :categories="categories" />
+      <NavbarSidemenu
+        :categories="categories"
+        @categoryClicked="categorySelected"
+      />
+      <NavbarLogo
+        :categories="categories"
+        @logoClicked="categorySelected(0)"
+      />
+      <NavbarItems
+        :categories="categories"
+        @categoryClicked="categorySelected"
+      />
     </section>
   </div>
 </template>
@@ -13,11 +22,14 @@ import NavbarLogo from "@/components/NavbarLogo.vue";
 import NavbarItems from "@/components/NavbarItems.vue";
 
 export default {
-  data() {
-    return {
-      categories: ["POLITICS", "BUSINESS", "TECH", "SCIENCE", "SPORTS"]
-    };
+  props: {
+    categories: Array
   },
-  components: { NavbarSidemenu, NavbarLogo, NavbarItems }
+  components: { NavbarSidemenu, NavbarLogo, NavbarItems },
+  methods: {
+    categorySelected(id) {
+      this.$emit("categorySelected", id);
+    }
+  }
 };
 </script>
