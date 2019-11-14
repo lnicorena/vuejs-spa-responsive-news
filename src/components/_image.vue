@@ -1,5 +1,5 @@
 <template>
-  <div class="image" :style="image"><slot /></div>
+  <div :class="`image ${loadingClass}`" :style="image"><slot /></div>
 </template>
 
 <script>
@@ -11,7 +11,7 @@ export default {
     },
     loader: {
       type: Boolean,
-      default: false
+      default: true
     },
     noimage: {
       type: String,
@@ -20,18 +20,23 @@ export default {
   },
   data() {
     return {
-      image: ""
+      image: "",
+      loaded: false
     };
   },
   created() {
     if (this.loader) {
-      this.image = `background-image: url(${require("../assets/loading.gif")}); background-size: 18px;`;
+      this.image = `background-image: url(${require("../assets/loading.gif")}); background-size: 18px; transition-property: none !important;`;
     }
   },
   mounted() {
     this.loadImage();
   },
-
+  computed: {
+    loadingClass() {
+      return !this.loaded ? "loading" : "";
+    }
+  },
   methods: {
     loadImage() {
       let im = new Image();
@@ -44,6 +49,9 @@ export default {
       };
       im.onload = () => {
         this.image = `background-image: url(${this.url});`;
+        setTimeout(() => {
+          this.loaded = true;
+        }, 500);
       };
       im.src = this.url;
     }
@@ -56,5 +64,8 @@ export default {
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
+}
+.image.loading {
+  transition-property: none !important;
 }
 </style>

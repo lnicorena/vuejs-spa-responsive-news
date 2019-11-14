@@ -39,6 +39,10 @@ export default {
   flex-grow: 1;
 }
 
+.article-default {
+  padding-top: 2em;
+}
+
 .article-default,
 .article-featured {
   margin: 10px;

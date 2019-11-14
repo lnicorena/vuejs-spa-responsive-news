@@ -5,10 +5,7 @@
         :categories="categories"
         @categoryClicked="categorySelected"
       />
-      <NavbarLogo
-        :categories="categories"
-        @logoClicked="categorySelected(0)"
-      />
+      <NavbarLogo :categories="categories" @logoClicked="categorySelected(0)" />
       <NavbarItems
         :categories="categories"
         @categoryClicked="categorySelected"

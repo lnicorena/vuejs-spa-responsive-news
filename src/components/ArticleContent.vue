@@ -3,11 +3,9 @@
     <News :mode="mode" :url="article.url" :image="article.image">
       {{ article.title | escape }}
     </News>
-    <Author :mode="mode" :image="article.avatar">
-      {{ article.author }}
-    </Author>
+    <Author :mode="mode" :authors="article.authors" />
     <TextInfo :mode="mode">
-      {{ article.text | escape | truncate(230) }}
+      {{ article.excerpt | escape | truncate(230) }}
     </TextInfo>
   </div>
 </template>

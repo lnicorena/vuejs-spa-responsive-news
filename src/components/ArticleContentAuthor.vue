@@ -1,7 +1,12 @@
 <template>
   <div :class="className">
-    <AuthorImage class="photo" :url="image" noimage="user" :loader="true" />
-    <p class="name"><slot /></p>
+    <AuthorImage
+      class="photo"
+      :url="authorPhoto"
+      noimage="user"
+      :loader="true"
+    />
+    <p class="name">{{ authorName }}</p>
   </div>
 </template>
 
@@ -9,11 +14,13 @@
 import AuthorImage from "@/components/_image.vue";
 export default {
   components: { AuthorImage },
+  data() {
+    return {
+      showAuthorsMax: 1
+    };
+  },
   props: {
-    text: {
-      type: String,
-      default: ""
-    },
+    authors: Array,
     mode: {
       type: String,
       default: "default"
@@ -23,8 +30,26 @@ export default {
       default: ""
     }
   },
-
   computed: {
+    authorPhoto() {
+      return this.authors.length == 0 ? "" : this.authors[0].avatar;
+    },
+    authorName() {
+      if (this.authors.length == 0) return "Unkown";
+      else
+        return this.filteredAuthors
+          .map(a => {
+            return a.name;
+          })
+          .join(", ");
+    },
+    filteredAuthors() {
+      let max =
+        this.authors.length <= this.showAuthorsMax
+          ? this.authors.length
+          : this.showAuthorsMax;
+      return this.authors.slice(0, max);
+    },
     className() {
       return `article-author-${this.mode}`;
     }
@@ -36,7 +61,7 @@ export default {
 .article-author-default,
 .article-author-featured,
 .article-author-headline {
-  margin: 20px 0px 10px 0px;
+  margin: 15px 0px 20px 0px;
   font-size: 13px;
   font-family: "Open Sans", sans-serif;
   display: flex;

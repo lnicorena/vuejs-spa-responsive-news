@@ -9,7 +9,7 @@
           v-bind:key="c.id"
         >
           <a @click="categoryClicked(c.id)">
-            {{ c.name | escape | upper}}
+            {{ c.name | escape | upper }}
           </a>
         </li>
       </ul>

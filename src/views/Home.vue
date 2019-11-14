@@ -1,7 +1,7 @@
 <template>
   <div>
     <Navbar :categories="categories" @categorySelected="filterArticles" />
-    <div id="main-container" v-if="loaded">
+    <div class="main-container" v-if="loaded">
       <div class="primary">
         <section>
           <Article mode="headline" :article="headlineArticle" />
@@ -30,6 +30,7 @@
         </section>
       </div>
     </div>
+    <div class="main-container loader" v-else></div>
   </div>
 </template>
 
@@ -45,12 +46,16 @@ export default {
   },
   data() {
     return {
-      articlesList: null,
       loaded: false,
-      articles: [],
-      page: 1,
+      articlesList: {
+        data: [],
+        itemsPage: 6,
+        currentPage: 0,
+        totalPages: 0,
+        totalItems: 0
+      },
       categories: [],
-      categoryFilter: 0,
+      categoryFilter: 0
     };
   },
   created() {
@@ -61,18 +66,21 @@ export default {
   },
   computed: {
     headlineArticle() {
-      return this.articles.length == 0 ? [] : this.articles[0];
+      return this.articlesList.data.length == 0
+        ? []
+        : this.articlesList.data[0];
     },
     featuredArticles() {
-      if (this.articles.length < 2) return [];
+      if (this.articlesList.data.length < 2) return [];
       else
-        return this.articles.length == 2
-          ? this.articles[1]
-          : this.articles.slice(1, 3);
+        return this.articlesList.data.length == 2
+          ? [this.articlesList.data[1]]
+          : this.articlesList.data.slice(1, 3);
     },
     defaultArticles() {
-      if (this.articles.length < 4) return [];
-      else return this.articles.slice(3, this.articles.length);
+      if (this.articlesList.data.length < 4) return [];
+      else
+        return this.articlesList.data.slice(3, this.articlesList.data.length);
     }
   },
   methods: {
@@ -80,7 +88,6 @@ export default {
       this.$api.get("/categories").then(res => {
         if (res.statusText == "OK" && res.data.length) {
           this.categories = res.data;
-          console.log(this.categories);
         }
       });
     },
@@ -90,36 +97,33 @@ export default {
     },
     loadArticles() {
       this.loaded = false;
-      let url = `/articles?page=${this.page}&category=${this.categoryFilter}`;
-      this.$api.get(url).then(res => {
-        if (res.statusText == "OK" && res.data.data.length) {
-          this.articlesList = res.data;
 
-          this.articles = this.articlesList.data.map(data => {
-            let article = {};
-            article.title = data.title;
-            article.author = data.authors.length
-              ? data.authors[0].name
-              : "Unknown";
-            article.categories = data.categories;
-            article.content = data.content;
-            article.text = data.excerpt;
-            article.avatar = data.authors.length ? data.authors[0].avatar : "";
-            article.image = data.image;
-            article.url = data.link;
-            return article;
-          });
+      this.$api
+        .get("/articles", {
+          params: {
+            page: this.articlesList.currentPage + 1,
+            category: this.categoryFilter
+          }
+        })
+        .then(res => {
+          if (res.statusText == "OK" && res.data.data.length) {
+            /* @todo load more articles button */
 
-          this.loaded = true;
-        }
-      });
+            this.articlesList.totalItems = res.data.total;
+            this.articlesList.itemsPage = res.data.per_page;
+            this.articlesList.currentPage = res.data.current_page;
+            this.articlesList.totalPages = res.data.last_page;
+            this.articlesList.data = res.data.data;
+            this.loaded = true;
+          }
+        });
     }
   }
 };
 </script>
 
 <style>
-#main-container {
+.main-container {
   margin: 1%;
   margin-top: 55px;
   padding: 5px;
@@ -134,6 +138,19 @@ export default {
   align-items: center;
   justify-content: center;
   font-size: 15px;
+}
+
+.main-container.loader {
+  background-image: url("~@/assets/loading.gif");
+  background-position: center center;
+  background-repeat: no-repeat;
+  position: absolute;
+  margin: auto;
+  background-size: 32px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
 
 .container-featured,
@@ -161,7 +178,7 @@ export default {
 }
 
 .primary {
-  height: 525px;
+  min-height: 525px;
   pointer-events: auto;
   margin: 5px;
   display: flex;
@@ -181,7 +198,7 @@ export default {
 
 .secondary {
   display: flex;
-  padding-top: 3em;
+  padding-top: 2em;
   justify-content: center;
 }
 

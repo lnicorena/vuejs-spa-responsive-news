@@ -9,6 +9,11 @@ export default {
       type: Array
     }
   },
+  data() {
+    return {
+      maxCategoriesShow: 2
+    };
+  },
   computed: {
     categoryName() {
       if (this.categories.length == 0) return "OTHERS";
@@ -24,8 +29,10 @@ export default {
           .join(" ");
     },
     filteredCategories() {
-      let quant = this.categories.length;
-      let max = quant < 4 ? quant : 3;
+      let max =
+        this.categories.length <= this.maxCategoriesShow
+          ? this.categories.length
+          : this.maxCategoriesShow;
       return this.categories.slice(0, max);
     }
   }

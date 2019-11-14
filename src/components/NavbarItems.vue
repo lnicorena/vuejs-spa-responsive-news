@@ -17,17 +17,17 @@ export default {
   computed: {
     filteredCategories() {
       if (this.categories.length > 7) {
-        return this.categories.slice(0, 7)
+        return this.categories.slice(0, 7);
       } else {
         return this.categories;
       }
     }
   },
   methods: {
-    categoryClicked(id){
-      this.$emit('categoryClicked', id)
+    categoryClicked(id) {
+      this.$emit("categoryClicked", id);
     }
-  },
+  }
 };
 </script>
 
