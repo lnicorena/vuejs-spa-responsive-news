@@ -1,4 +1,7 @@
-# tech-news
+# Responsive News SPA
+
+Single Page Application (SPA) built with VueJS to dinamically display content news from a REST API https://github.com/lnicorena/laravel-scraping-news 
+
 
 ## Project setup
 ```
